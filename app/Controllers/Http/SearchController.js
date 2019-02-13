@@ -4,7 +4,11 @@ const Meetup = use('App/Models/Meetup');
 
 class SearchController {
   async index ({ request }) {
-    const meetups = await Meetup.all();
+    const search = request.input('search', '');
+
+    const meetups = await Meetup.query()
+      .whereRaw(`title LIKE '%${search}%'`)
+      .fetch();
 
     return meetups;
   }
