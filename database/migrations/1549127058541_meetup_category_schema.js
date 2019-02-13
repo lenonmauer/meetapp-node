@@ -10,12 +10,16 @@ class MeetupCategorySchema extends Schema {
         .integer('meetup_id')
         .unsigned()
         .references('id')
-        .inTable('meetups');
+        .inTable('meetups')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table
         .integer('category_id')
         .unsigned()
         .references('id')
-        .inTable('categories');
+        .inTable('categories')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table.timestamps();
     });
   }

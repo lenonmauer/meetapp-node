@@ -10,12 +10,16 @@ class SubscriptionSchema extends Schema {
         .integer('meetup_id')
         .unsigned()
         .references('id')
-        .inTable('meetups');
+        .inTable('meetups')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table
         .integer('user_id')
         .unsigned()
         .references('id')
-        .inTable('users');
+        .inTable('users')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table.timestamps();
     });
   }

@@ -13,12 +13,16 @@ class MeetupSchema extends Schema {
         .integer('photo_id')
         .unsigned()
         .references('id')
-        .inTable('files');
+        .inTable('files')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table
         .integer('user_id')
         .unsigned()
         .references('id')
-        .inTable('users');
+        .inTable('users')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table.string('localization', 80).notNullable();
       table.timestamps();
     });

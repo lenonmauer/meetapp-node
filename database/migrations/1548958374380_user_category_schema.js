@@ -10,12 +10,16 @@ class UserCategorySchema extends Schema {
         .integer('user_id')
         .unsigned()
         .references('id')
-        .inTable('users');
+        .inTable('users')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table
         .integer('category_id')
         .unsigned()
         .references('id')
-        .inTable('categories');
+        .inTable('categories')
+        .onDelete('CASCADE')
+        .onUpdate('CASCADE');
       table.timestamps();
     });
   }
