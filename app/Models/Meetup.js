@@ -8,6 +8,18 @@ class Meetup extends Model {
     return ['photo_url'];
   }
 
+  static get dates () {
+    return super.dates.concat(['date']);
+  }
+
+  static castDates (field, value) {
+    if (field === 'date') {
+      return value.format('DD/MM/YYYY HH:mm');
+    }
+
+    return super.formatDates(field, value);
+  }
+
   categories () {
     return this.hasMany('App/Models/MeetupCategory');
   }
