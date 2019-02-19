@@ -11,11 +11,11 @@ class NewSubscriptionMail {
     return 'NewSubscriptionMail-job';
   }
 
-  async handle ({ title, email, username, date }) {
+  async handle ({ title, email, name, date }) {
     await Mail.send(
       ['emails.new_subscription'],
       {
-        username,
+        name,
         title,
         date,
       },

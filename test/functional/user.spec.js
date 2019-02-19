@@ -11,12 +11,12 @@ before(async () => {
 });
 
 test('should create a new user', async ({ client }) => {
-  const username = 'User test';
+  const name = 'User test';
   const email = `email@test.com`;
   const password = 'secret_password';
 
   const data = {
-    username,
+    name,
     email,
     password,
     password_confirmation: password,
@@ -31,6 +31,6 @@ test('should create a new user', async ({ client }) => {
 
   response.assertJSONSubset({
     email,
-    username,
+    name,
   });
 });

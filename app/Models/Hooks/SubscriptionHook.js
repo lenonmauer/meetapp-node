@@ -10,9 +10,9 @@ SubscriptionHook.sendNewSubscriptionMail = async (subscriptionInstance) => {
   const user = await subscriptionInstance.user().fetch();
 
   const { title, date } = meetup.toJSON();
-  const { email, username } = user;
+  const { email, name } = user;
 
-  const jobData = { title, date, email, username };
+  const jobData = { title, date, email, name };
   const jobConfig = {
     attempts: 2,
   };

@@ -6,16 +6,16 @@ class UserController {
   async show ({ auth }) {
     await auth.user.load('categories');
 
-    const { username, categories } = auth.user.toJSON();
+    const { name, categories } = auth.user.toJSON();
 
     return {
-      username,
-      categories: categories.map(category => category.category_id),
+      name,
+      categories: categories.map(category => category.id),
     };
   }
 
   async store ({ request }) {
-    const data = request.only(['username', 'email', 'password']);
+    const data = request.only(['name', 'email', 'password']);
 
     const user = await User.create(data);
 
@@ -23,27 +23,23 @@ class UserController {
   }
 
   async update ({ request, auth }) {
-    const userData = request.only(['username', 'password']);
+    const userData = request.only(['name', 'password']);
+    const categoryIds = request.input('categories');
     const user = auth.user;
 
     user.merge(userData);
 
     await user.save();
 
-    const categoryRecords = request.input('categories').map(
-      category_id => ({ category_id })
-    );
-
-    await user.categories().delete();
-    await user.categories().createMany(categoryRecords);
+    await user.categories().sync(categoryIds);
 
     await user.load('categories');
 
-    const { username, categories } = user.toJSON();
+    const { name, categories } = user.toJSON();
 
     return {
-      username,
-      categories: categories.map(category => category.category_id),
+      name,
+      categories: categories.map(category => category.id),
     };
   }
 }
