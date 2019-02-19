@@ -21,7 +21,9 @@ class ExceptionHandler extends BaseExceptionHandler {
   }
 
   async report (error, { request }) {
-    console.log(error);
+    if (Env.get('NODE_ENV') === 'development') {
+      console.log(error);
+    }
   }
 }
 
