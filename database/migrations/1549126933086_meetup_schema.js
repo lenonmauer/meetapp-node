@@ -6,8 +6,8 @@ class MeetupSchema extends Schema {
   up () {
     this.create('meetups', (table) => {
       table.increments();
-      table.string('title', 80).notNullable();
-      table.string('description', 80).notNullable();
+      table.string('title').notNullable();
+      table.string('description').notNullable();
       table.datetime('date').notNullable();
       table
         .integer('photo_id')
@@ -23,7 +23,7 @@ class MeetupSchema extends Schema {
         .inTable('users')
         .onDelete('CASCADE')
         .onUpdate('CASCADE');
-      table.string('localization', 80).notNullable();
+      table.string('localization').notNullable();
       table.timestamps();
     });
   }
