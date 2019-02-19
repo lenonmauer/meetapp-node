@@ -1,16 +1,18 @@
 'use strict';
 
-const { test, trait, before } = use('Test/Suite')('User Controller');
+const { test, trait, beforeEach } = use('Test/Suite')('User Controller');
+const Factory = use('Factory');
 
 const User = use('App/Models/User');
 
 trait('Test/ApiClient');
+trait('Auth/Client');
 
-before(async () => {
-  await await User.query().delete();
+beforeEach(async () => {
+  await User.query().delete();
 });
 
-test('should create a new user', async ({ client }) => {
+test('STORE / should create a new user', async ({ client }) => {
   const name = 'User test';
   const email = `email@test.com`;
   const password = 'secret_password';
@@ -33,4 +35,39 @@ test('should create a new user', async ({ client }) => {
     email,
     name,
   });
+});
+
+test('STORE / should not create a new user with a duplicated email', async ({ client }) => {
+  const user = await Factory
+    .model('App/Models/User')
+    .create();
+
+  const data = {
+    name: 'User test',
+    email: user.email,
+    password: 'secret_password',
+    password_confirmation: 'secret_password',
+  };
+
+  const response = await client.post('/users')
+    .header('accept', 'application/json')
+    .send(data)
+    .end();
+
+  response.assertStatus(400);
+
+  response.assertJSONSubset([{
+    message: 'Este e-mail está um uso. Informe outro.',
+  }]);
+});
+
+test('STORE / should return validation errors', async ({ client }) => {
+  const data = {};
+
+  const response = await client.post('/users')
+    .header('accept', 'application/json')
+    .send(data)
+    .end();
+
+  response.assertStatus(400);
 });
