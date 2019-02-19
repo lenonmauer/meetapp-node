@@ -6,17 +6,20 @@ const Meetup = use('App/Models/Meetup');
 
 class MeetupController {
   async index ({ request, auth }) {
+    const search = request.input('search', '');
+
     const { user } = auth;
 
     await user.load('categories');
 
     const now = moment().format('YYYY-MM-DD HH:mm');
-    const userCategories = user.toJSON().categories.map(category => category.category_id);
+    const userCategories = user.toJSON().categories.map(category => category.id);
 
     const enrollments = await Meetup.query()
       .innerJoin('subscriptions', 'subscriptions.meetup_id', 'meetups.id')
       .where('subscriptions.user_id', user.id)
       .where('meetups.date', '>', now)
+      .whereRaw(`title LIKE '%${search}%'`)
       .orderBy('meetups.date', 'asc')
       .limit(3)
       .withCount('subscriptions')
@@ -27,6 +30,7 @@ class MeetupController {
     const next = await Meetup.query()
       .where('date', '>', now)
       .whereNotIn('id', enrollmentsId)
+      .whereRaw(`title LIKE '%${search}%'`)
       .orderBy('date', 'asc')
       .limit(3)
       .withCount('subscriptions')
@@ -37,6 +41,7 @@ class MeetupController {
       .innerJoin('meetup_categories', 'meetup_categories.meetup_id', 'meetups.id')
       .whereIn('meetup_categories.id', userCategories)
       .whereNotIn('meetups.id', enrollmentsId)
+      .whereRaw(`title LIKE '%${search}%'`)
       .orderBy('date', 'asc')
       .groupBy('meetups.id')
       .limit(3)
@@ -62,7 +67,7 @@ class MeetupController {
     const now = moment().format('x');
     const dateInMilis = moment(request.input('date'), 'DD/MM/YYYY H:m').format('x');
 
-    if (dateInMilis < now) {
+    if (Number(dateInMilis) < Number(now)) {
       return response.status(400).send([
         {
           message: 'O campo data dever ser maior que a data de hoje.',
@@ -71,15 +76,11 @@ class MeetupController {
       ]);
     }
 
+    const categoryIds = request.input('categories');
     const date = moment(dateInMilis, 'x').format('YYYY-MM-DD HH:mm:ss');
-
     const meetup = await Meetup.create({ ...data, user_id: auth.user.id, date });
 
-    const categories = request.input('categories').map(
-      category_id => ({ category_id })
-    );
-
-    await meetup.categories().createMany(categories);
+    await meetup.categories().attach(categoryIds);
 
     await meetup.load('categories');
 
