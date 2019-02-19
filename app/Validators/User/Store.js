@@ -9,7 +9,7 @@ class Store {
 
   get rules () {
     return {
-      username: 'required',
+      name: 'required',
       email: 'required|email|unique:users',
       password: 'required|min:6',
     };
@@ -17,7 +17,7 @@ class Store {
 
   get messages () {
     return {
-      'username.required': 'O campo Nome é obrigatório.',
+      'name.required': 'O campo Nome é obrigatório.',
       'email.required': 'O campo E-mail é obrigatório.',
       'password.required': 'O campo Senha é obrigatório.',
       'email.email': 'Informe um e-mail válido.',

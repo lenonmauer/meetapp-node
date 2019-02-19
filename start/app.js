@@ -1,5 +1,7 @@
 'use strict';
 
+const path = require('path');
+
 /*
 |--------------------------------------------------------------------------
 | Providers
@@ -10,6 +12,7 @@
 | provider here.
 |
 */
+
 const providers = [
   '@adonisjs/framework/providers/AppProvider',
   '@adonisjs/auth/providers/AuthProvider',
@@ -22,6 +25,8 @@ const providers = [
   'adonis-kue/providers/KueProvider',
   '@adonisjs/mail/providers/MailProvider',
   '@adonisjs/framework/providers/ViewProvider',
+  path.join(__dirname, '..', 'providers', 'DatetimeRuleProvider'),
+  path.join(__dirname, '..', 'providers', 'ExistsRuleProvider'),
 ];
 
 /*
