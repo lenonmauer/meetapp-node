@@ -21,7 +21,7 @@ class Meetup extends Model {
   }
 
   categories () {
-    return this.hasMany('App/Models/MeetupCategory');
+    return this.belongsToMany('App/Models/Category').pivotModel('App/Models/MeetupCategory');
   }
 
   subscriptions () {

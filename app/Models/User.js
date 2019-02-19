@@ -15,6 +15,10 @@ class User extends Model {
   }
 
   categories () {
+    return this.belongsToMany('App/Models/Category').pivotModel('App/Models/UserCategory');
+  }
+
+  userCategories () {
     return this.hasMany('App/Models/UserCategory');
   }
 }
