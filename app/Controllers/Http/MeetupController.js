@@ -15,24 +15,26 @@ class MeetupController {
     const now = moment().format('YYYY-MM-DD HH:mm');
     const userCategories = user.toJSON().categories.map(category => category.id);
 
-    const enrollments = await Meetup.query()
+    const subscriptions = await Meetup.query()
+      .distinct()
+      .select('meetups.*')
       .innerJoin('subscriptions', 'subscriptions.meetup_id', 'meetups.id')
       .where('subscriptions.user_id', user.id)
       .where('meetups.date', '>', now)
       .whereRaw(`title LIKE '%${search}%'`)
       .orderBy('meetups.date', 'asc')
-      .limit(3)
+      .limit(6)
       .withCount('subscriptions')
       .fetch();
 
-    const enrollmentsId = enrollments.toJSON().map(enrollment => enrollment.id);
+    const subscriptionsId = subscriptions.toJSON().map(subscription => subscription.id);
 
     const next = await Meetup.query()
       .where('date', '>', now)
-      .whereNotIn('id', enrollmentsId)
+      .whereNotIn('id', subscriptionsId)
       .whereRaw(`title LIKE '%${search}%'`)
       .orderBy('date', 'asc')
-      .limit(3)
+      .limit(6)
       .withCount('subscriptions')
       .fetch();
 
@@ -40,25 +42,44 @@ class MeetupController {
       .select('meetups.*')
       .innerJoin('meetup_categories', 'meetup_categories.meetup_id', 'meetups.id')
       .whereIn('meetup_categories.id', userCategories)
-      .whereNotIn('meetups.id', enrollmentsId)
+      .whereNotIn('meetups.id', subscriptionsId)
+      .where('meetups.date', '>', now)
       .whereRaw(`title LIKE '%${search}%'`)
       .orderBy('date', 'asc')
       .groupBy('meetups.id')
-      .limit(3)
+      .limit(6)
       .withCount('subscriptions')
       .fetch();
 
+    const mergeCount = meetups => meetups.toJSON().map(meetup => ({
+      ...meetup,
+      members_count: meetup.__meta__.subscriptions_count,
+    }));
+
     return {
-      enrollments,
-      next,
-      recommended,
+      subscriptions: mergeCount(subscriptions),
+      next: mergeCount(next),
+      recommended: mergeCount(recommended),
     };
   }
 
-  async show ({ request }) {
-    const meetup = await Meetup.find(request.params.id);
+  async show ({ request, auth }) {
+    const meetup = await Meetup.query()
+      .where('id', request.params.id)
+      .withCount('subscriptions')
+      .first();
 
-    return meetup;
+    const subscript = await meetup.subscriptions()
+      .where('user_id', auth.user.id)
+      .first();
+
+    const data = meetup.toJSON();
+
+    return {
+      ...data,
+      subscript: !!subscript,
+      members_count: data.__meta__.subscriptions_count,
+    };
   }
 
   async store ({ request, auth, response }) {
