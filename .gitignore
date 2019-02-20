@@ -11,3 +11,5 @@ tmp
 database/development.sqlite
 
 .env.testing
+
+test/covarage
