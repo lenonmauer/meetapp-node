@@ -1,7 +1,5 @@
 'use strict';
 
-const User = use('App/Models/User');
-
 class UserCategoryController {
   async update ({ request, auth }) {
     const user = auth.user;

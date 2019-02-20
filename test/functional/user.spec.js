@@ -71,3 +71,80 @@ test('STORE / should return validation errors', async ({ client }) => {
 
   response.assertStatus(400);
 });
+
+test('SHOW / should return user profile', async ({ client }) => {
+  const user = await Factory
+    .model('App/Models/User')
+    .create();
+
+  const category = await Factory
+    .model('App/Models/Category')
+    .create();
+
+  user.categories().attach([category.id]);
+
+  const response = await client.get('/profile')
+    .loginVia(user, 'jwt')
+    .end();
+
+  response.assertStatus(200);
+
+  response.assertJSON({
+    name: user.name,
+    categories: [
+      category.id,
+    ],
+  });
+});
+
+test('UPDATE / should update user profile', async ({ client }) => {
+  const user = await Factory
+    .model('App/Models/User')
+    .create();
+
+  const category = await Factory
+    .model('App/Models/Category')
+    .create();
+
+  const category2 = await Factory
+    .model('App/Models/Category')
+    .create();
+
+  user.categories().attach([category.id]);
+
+  const data = {
+    name: 'name test',
+    categories: [category2.id],
+    password: '123456',
+    password_confirmation: '123456',
+  };
+
+  const response = await client.put('/users')
+    .loginVia(user, 'jwt')
+    .send(data)
+    .end();
+
+  response.assertStatus(200);
+
+  response.assertJSON({
+    name: data.name,
+    categories: [
+      category2.id,
+    ],
+  });
+});
+
+test('UPDATE / should return validation error', async ({ client }) => {
+  const user = await Factory
+    .model('App/Models/User')
+    .create();
+
+  const data = {};
+
+  const response = await client.put('/users')
+    .loginVia(user, 'jwt')
+    .send(data)
+    .end();
+
+  response.assertStatus(400);
+});
