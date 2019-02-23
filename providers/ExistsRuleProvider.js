@@ -13,8 +13,6 @@ class ExistsRuleProvider extends ServiceProvider {
 
     const row = await Database.table(table).where(column, value).first();
 
-    console.log('ro', row);
-
     if (!row) {
       throw message;
     }
