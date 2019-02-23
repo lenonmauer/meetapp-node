@@ -1,7 +1,7 @@
 const { ServiceProvider } = require('@adonisjs/fold');
 
 class DatetimeRuleProvider extends ServiceProvider {
-  async existsFn (data, field, message, args, get) {
+  async dateTimeFn (data, field, message, args, get) {
     const value = get(data, field);
 
     if (!value) {
@@ -15,7 +15,7 @@ class DatetimeRuleProvider extends ServiceProvider {
 
   boot () {
     const Validator = use('Validator');
-    Validator.extend('datetime-br', this.existsFn.bind(this));
+    Validator.extend('datetime-br', this.dateTimeFn.bind(this));
   }
 }
 
