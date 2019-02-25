@@ -1,17 +1,14 @@
 'use strict';
 
-const { test, trait, beforeEach } = use('Test/Suite')('User Controller');
+const { test, trait, beforeEach } = use('Test/Suite')('UserController');
 const Factory = use('Factory');
-
-const User = use('App/Models/User');
-const Category = use('App/Models/Category');
+const truncateDB = require('../utils/truncate');
 
 trait('Test/ApiClient');
 trait('Auth/Client');
 
 beforeEach(async () => {
-  await User.query().delete();
-  await Category.query().delete();
+  await truncateDB();
 });
 
 test('STORE / should create a new user', async ({ client }) => {

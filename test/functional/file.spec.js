@@ -3,16 +3,13 @@
 const { test, trait, beforeEach } = use('Test/Suite')('FileController');
 const path = require('path');
 const Factory = use('Factory');
-
-const User = use('App/Models/User');
-const File = use('App/Models/File');
+const truncateDB = require('../utils/truncate');
 
 trait('Test/ApiClient');
 trait('Auth/Client');
 
 beforeEach(async () => {
-  await User.query().delete();
-  await File.query().delete();
+  await truncateDB();
 });
 
 test('STORE / should upload a file', async ({ client }) => {

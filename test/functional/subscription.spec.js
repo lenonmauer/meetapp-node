@@ -2,18 +2,13 @@
 
 const { test, trait, beforeEach } = use('Test/Suite')('SubscriptionController');
 const Factory = use('Factory');
-
-const User = use('App/Models/User');
-const Meetup = use('App/Models/Meetup');
-const File = use('App/Models/File');
+const truncateDB = require('../utils/truncate');
 
 trait('Test/ApiClient');
 trait('Auth/Client');
 
 beforeEach(async () => {
-  await Meetup.query().delete();
-  await User.query().delete();
-  await File.query().delete();
+  await truncateDB();
 });
 
 test('STORE / should subscribe user into meetup', async ({ client }) => {

@@ -2,13 +2,12 @@
 
 const { test, trait, beforeEach } = use('Test/Suite')('CategoryController');
 const Factory = use('Factory');
-
-const Category = use('App/Models/Category');
+const truncateDB = require('../utils/truncate');
 
 trait('Test/ApiClient');
 
 beforeEach(async () => {
-  await Category.query().delete();
+  await truncateDB();
 });
 
 test('INDEX / should return an array of categories', async ({ client, assert }) => {

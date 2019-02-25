@@ -2,13 +2,12 @@
 
 const { test, trait, beforeEach } = use('Test/Suite')('SessionController');
 const Factory = use('Factory');
-
-const User = use('App/Models/User');
+const truncateDB = require('../utils/truncate');
 
 trait('Test/ApiClient');
 
 beforeEach(async () => {
-  await User.query().delete();
+  await truncateDB();
 });
 
 test('STORE / should return the auth token', async ({ client }) => {
