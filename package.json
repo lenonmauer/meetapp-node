@@ -32,7 +32,7 @@
     "@adonisjs/vow": "^1.0.17",
     "adonis-kue": "^5.0.1",
     "moment": "^2.24.0",
-    "mysql2": "^1.6.4"
+    "pg": "^7.8.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -44,6 +44,7 @@
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
     "mocha": "^5.2.0",
+    "mysql2": "^1.6.4",
     "nyc": "^13.3.0"
   },
   "autoload": {
