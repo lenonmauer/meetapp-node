@@ -3,10 +3,6 @@
 const BaseExceptionHandler = use('BaseExceptionHandler');
 const Env = use('Env');
 
-if (Env.get('NODE_ENV') === 'development') {
-  const Youch = use('Youch');
-}
-
 class ExceptionHandler extends BaseExceptionHandler {
   async handle (error, { request, response }) {
     if (error.name === 'ValidationException') {
@@ -14,6 +10,8 @@ class ExceptionHandler extends BaseExceptionHandler {
     }
 
     if (Env.get('NODE_ENV') === 'development') {
+      const Youch = use('Youch');
+
       const youch = new Youch(error, request.request);
       const errorJSON = await youch.toJSON();
 
