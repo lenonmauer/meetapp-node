@@ -2,7 +2,10 @@
 
 const BaseExceptionHandler = use('BaseExceptionHandler');
 const Env = use('Env');
-const Youch = use('Youch');
+
+if (Env.get('NODE_ENV') === 'development') {
+  const Youch = use('Youch');
+}
 
 class ExceptionHandler extends BaseExceptionHandler {
   async handle (error, { request, response }) {
