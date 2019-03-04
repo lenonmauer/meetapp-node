@@ -32,7 +32,8 @@
     "@adonisjs/vow": "^1.0.17",
     "adonis-kue": "^5.0.1",
     "moment": "^2.24.0",
-    "pg": "^7.8.1"
+    "pg": "^7.8.1",
+    "raven": "^2.6.4"
   },
   "devDependencies": {
     "chai": "^4.2.0",
